@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/head') %> <!-- Assuming Bootstrap is included here -->
+    <title>Homepage</title>
+</head>
+<body>
+    <%- include('./partials/nav') %> <!-- Navbar partial -->
+
+    <!-- Blog Section -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h1 class="display-4"><%= blog.title %></h1>
+                <% if (blog.coverImageURL) { %>
+                    <img src="<%= blog.coverImageURL %>" class="img-fluid rounded mb-4" alt="Blog Cover Image" style="max-width: 100%; height: auto;">
+                <% } %>
+            </div>
+            <div class="col-12">
+                <pre class="bg-light p-3 rounded" style="white-space: pre-wrap;"><%= blog.body %></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Author Section -->
+    <div class="container my-5">
+        <div class="d-flex align-items-center">
+            <% if (blog.createdBy && blog.createdBy.profileImageURL) { %>
+                <img src="<%= blog.createdBy.profileImageURL %>" class="rounded-circle border" width="100" alt="Author's Image">
+            <% } %>
+            <div class="ms-3">
+                <h5 class="fw-bold mb-0"><%= blog.createdBy ? blog.createdBy.fullName : 'Anonymous' %></h5>
+                <p class="text-muted">Author</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="container mt-5">
+        <h2 class="mb-4">Comments (<%= comments.length %>)</h2>
+
+        <% if (locals.user) { %>
+        <form action="/blog/comment/<%= blog._id %>" method="post" class="mb-5">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="commentInput" name="content" placeholder="Enter your comment" required>
+                <label for="commentInput">Enter Your Comment</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+        <% } %>
+
+        <div class="comments-list">
+            <% comments.forEach(comment => { %>
+            <div class="d-flex align-items-start mb-4">
+                <img src="<%= comment.createdBy.profileImageURL %>" class="rounded-circle border me-3" width="40" alt="Commenter's Image">
+                <div>
+                    <h6 class="fw-bold mb-1"><%= comment.createdBy.fullName %></h6>
+                    <pre class="bg-light p-3 rounded" style="white-space: pre-wrap;"><%= comment.content %></pre>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <%- include('./partials/scripts') %> <!-- Footer scripts -->
+</body>
+</html>
